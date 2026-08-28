@@ -372,4 +372,3 @@ class VerdeLegalRepository(private val db: AppDatabase) {
         }
     }
 }
-EOF
