@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Paleta base del Valle Verde: verdes de bosque, azules de río, tierra cálida -->
+    <color name="forest_deep">#1B4332</color>
+    <color name="forest_mid">#2D6A4F</color>
+    <color name="forest_light">#74C69D</color>
+    <color name="river_blue">#1D8FA6</color>
+    <color name="river_light">#8FE3D8</color>
+    <color name="soil_brown">#8D6247</color>
+    <color name="sun_gold">#F2B705</color>
+    <color name="sun_light">#FFE0A3</color>
+    <color name="alert_coral">#F26B5E</color>
+    <color name="cream_bg">#FBF6EC</color>
+    <color name="ink_dark">#243B34</color>
+</resources>
