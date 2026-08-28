@@ -22,6 +22,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -101,6 +102,10 @@ fun ChallengeScreen(userId: Long, challengeId: Long, onBack: () -> Unit) {
                         onMove = viewModel::moveStep,
                         onConfirm = viewModel::confirmOrder
                     )
+                    ChallengeType.DRAG_RESTORE, ChallengeType.AUTHORIZATION -> {
+                        // Estos tipos se juegan en sus propias pantallas (RestorationScreen / AuthorizationScreen),
+                        // nunca se instancian como reto dentro de ChallengeScreen.
+                    }
                 }
             }
         }
@@ -197,7 +202,7 @@ private fun DetectiveBody(issues: List<IssueInfo>, found: Set<Long>, onFind: (Lo
 }
 
 @Composable
-private fun OrderStepsBody(
+private fun ColumnScope.OrderStepsBody(
     options: List<DecisionOption>,
     orderedIds: List<Long>,
     onMove: (Int, Int) -> Unit,

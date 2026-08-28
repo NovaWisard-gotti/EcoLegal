@@ -88,6 +88,23 @@ private fun DrawScope.drawCategoryGlyph(category: IconCategory, s: Float, c: Off
             drawLine(CardWhite, Offset(c.x - s * 0.06f, c.y - s * 0.06f), Offset(c.x + s * 0.06f, c.y + s * 0.06f), strokeWidth = s * 0.02f)
             drawLine(CardWhite, Offset(c.x + s * 0.06f, c.y - s * 0.06f), Offset(c.x - s * 0.06f, c.y + s * 0.06f), strokeWidth = s * 0.02f)
         }
+        IconCategory.PAPER -> {
+            drawRoundRect(
+                color = CardWhite,
+                topLeft = Offset(c.x - s * 0.12f, c.y - s * 0.15f),
+                size = Size(s * 0.24f, s * 0.30f),
+                cornerRadius = CornerRadius(s * 0.02f),
+                style = Stroke(width = s * 0.02f)
+            )
+            for (i in 0..2) {
+                drawLine(
+                    InkDark.copy(alpha = 0.6f),
+                    Offset(c.x - s * 0.07f, c.y - s * 0.07f + i * s * 0.08f),
+                    Offset(c.x + s * 0.07f, c.y - s * 0.07f + i * s * 0.08f),
+                    strokeWidth = s * 0.012f
+                )
+            }
+        }
         IconCategory.ANIMAL -> {
             drawOval(color = RiverBlue, topLeft = Offset(c.x - s * 0.16f, c.y - s * 0.06f), size = Size(s * 0.28f, s * 0.14f))
             val tail = Path().apply {

@@ -134,6 +134,8 @@ private fun ChallengeRow(challenge: ChallengeInfo, onClick: () -> Unit) {
         ChallengeType.SEMAFORO -> Icons.Filled.Traffic to "Semáforo"
         ChallengeType.DETECTIVE_FIND -> Icons.Filled.Search to "Detective"
         ChallengeType.ORDER_STEPS -> Icons.Filled.FormatListNumbered to "Ordenar"
+        ChallengeType.DRAG_RESTORE -> Icons.Filled.Build to "Reparar"
+        ChallengeType.AUTHORIZATION -> Icons.Filled.Gavel to "Autorización"
     }
     Surface(
         onClick = onClick,
