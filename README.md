@@ -1,4 +1,4 @@
-# VerdeLegal — Guardianes del Valle Verde
+# EcoLegal — Guardianes del Valle Verde
 
 Aplicación educativa Android (nativa, Kotlin + Jetpack Compose) para niños de
 8 a 12 años sobre educación ambiental y comprensión básica de normas y
@@ -16,7 +16,7 @@ responsabilidades, ambientada en un valle ficticio llamado **Valle Verde**.
 
 ## Resumen
 
-- **Paquete:** `com.educalab.verdelegal`
+- **Paquete:** `com.educalab.ecolegal`
 - **Versión:** 1.0.0
 - **Idioma:** Español
 - **Plataforma:** Android nativo, `minSdk 24`, `compileSdk/targetSdk 34`, JDK 17
@@ -92,7 +92,7 @@ gradle wrapper --gradle-version 8.7
 
 ## Privacidad
 
-VerdeLegal no solicita nombre real, correo, teléfono, dirección, ubicación
+EcoLegal no solicita nombre real, correo, teléfono, dirección, ubicación
 ni contactos. El perfil usa solo un alias y un avatar ilustrado local (8
 opciones). Todos los datos se guardan únicamente en el dispositivo.
 

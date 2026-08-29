@@ -1,4 +1,4 @@
-name: Build VerdeLegal APK
+name: Build EcoLegal APK
 
 on:
   push:
@@ -50,15 +50,15 @@ jobs:
       - name: Compute SHA-256
         run: |
           mkdir -p deliverables
-          cp app/build/outputs/apk/debug/app-debug.apk deliverables/VerdeLegal-v1.0.0.apk
-          sha256sum deliverables/VerdeLegal-v1.0.0.apk > deliverables/VerdeLegal-v1.0.0.apk.sha256
-          cat deliverables/VerdeLegal-v1.0.0.apk.sha256
+          cp app/build/outputs/apk/debug/app-debug.apk deliverables/EcoLegal-v1.0.0.apk
+          sha256sum deliverables/EcoLegal-v1.0.0.apk > deliverables/EcoLegal-v1.0.0.apk.sha256
+          cat deliverables/EcoLegal-v1.0.0.apk.sha256
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: VerdeLegal-v1.0.0-apk
-          path: deliverables/VerdeLegal-v1.0.0.apk
+          name: EcoLegal-v1.0.0-apk
+          path: deliverables/EcoLegal-v1.0.0.apk
 
       - name: Upload test results
         if: always()

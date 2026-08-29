@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "VerdeLegal"
+rootProject.name = "EcoLegal"
 include(":app")

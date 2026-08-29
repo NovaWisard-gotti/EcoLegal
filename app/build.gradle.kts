@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.educalab.verdelegal"
+    namespace = "com.educalab.ecolegal"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.educalab.verdelegal"
+        applicationId = "com.educalab.ecolegal"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

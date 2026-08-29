@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <full-backup-content>
-    <include domain="database" path="verdelegal.db" />
+    <include domain="database" path="ecolegal.db" />
 </full-backup-content>
