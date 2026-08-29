@@ -185,7 +185,7 @@ private fun DecisionOptionCard(index: Int, accent: Color, text: String, onClick:
                     modifier = Modifier.size(32.dp).clip(CircleShape).background(accent),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("${index + 1}", color = Color.White, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
+                    Text("${index + 1}", color = textColorFor(accent), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyMedium)
                 }
                 Spacer(Modifier.width(12.dp))
                 Text(text, modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge, color = InkDark)

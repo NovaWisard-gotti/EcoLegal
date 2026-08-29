@@ -20,6 +20,26 @@ import androidx.compose.ui.unit.dp
 import com.educalab.ecolegal.data.local.entity.ZoneStatus
 import com.educalab.ecolegal.ui.theme.*
 
+/** Color de identidad de cada zona, reutilizado en el mapa y dentro de la zona para dar variedad. */
+fun zoneAccent(code: String): Color = when (code) {
+    "BOSQUE" -> ForestMid
+    "RIO" -> RiverBlue
+    "COMUNIDAD" -> SunGold
+    "ANIMALES" -> SoilBrown
+    "AGRICOLA" -> Color(0xFFC98A2E)
+    else -> ForestMid
+}
+
+/** Verde de acierto y coral de error para marcar resultados de retos/decisiones (sección 19: siempre icono + color). */
+val SuccessGreen = ForestMid
+val ErrorRed = AlertCoral
+
+/** Elige texto blanco u oscuro según el brillo del fondo, para que siempre resalte (contraste WCAG aproximado). */
+fun textColorFor(background: Color): Color {
+    val luminance = 0.299f * background.red + 0.587f * background.green + 0.114f * background.blue
+    return if (luminance > 0.6f) InkDark else Color.White
+}
+
 /** Estado visual de un módulo: SIEMPRE icono + texto, nunca solo color (sección 19). */
 @Composable
 fun ZoneStatusBadge(status: ZoneStatus, modifier: Modifier = Modifier) {

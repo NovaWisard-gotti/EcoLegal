@@ -51,4 +51,9 @@ class AuthorizationViewModel(
             _uiState.value = _uiState.value.copy(outcome = outcome)
         }
     }
+
+    /** Permite volver a intentar la actividad: limpia la decisión y las medidas elegidas. */
+    fun reset() {
+        _uiState.value = _uiState.value.copy(outcome = null, selectedMeasureIds = emptySet())
+    }
 }

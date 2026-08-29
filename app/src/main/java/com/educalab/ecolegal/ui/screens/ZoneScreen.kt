@@ -54,6 +54,7 @@ fun ZoneScreen(
         }
 
         val zone = uiState.zone!!
+        val accent = zoneAccent(zone.code)
 
         LazyColumn(contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
             item {
@@ -61,14 +62,14 @@ fun ZoneScreen(
                     Box(
                         modifier = Modifier
                             .size(70.dp)
-                            .background(ForestLight.copy(alpha = 0.2f), RoundedCornerShape(20.dp)),
+                            .background(accent.copy(alpha = 0.22f), RoundedCornerShape(20.dp)),
                         contentAlignment = Alignment.Center
                     ) { ZoneIllustration(code = zone.code, modifier = Modifier.size(56.dp)) }
                     Spacer(Modifier.width(14.dp))
                     Column {
                         Text(zone.displayName, style = MaterialTheme.typography.headlineMedium, color = InkDark, fontWeight = FontWeight.Bold)
                         uiState.progress?.let {
-                            Text("${it.xp} XP en esta zona", style = MaterialTheme.typography.bodyMedium, color = InkDark.copy(alpha = 0.6f))
+                            Text("⚡ ${it.xp} XP en esta zona", style = MaterialTheme.typography.bodyMedium, color = accent)
                         }
                     }
                 }
@@ -81,23 +82,34 @@ fun ZoneScreen(
                 )
             }
 
-            item { SectionHeader(title = "Situaciones y retos") }
+            item { SectionHeader(title = "🧭 Situaciones y retos") }
 
             items(uiState.scenarios) { swc ->
-                ScenarioBlock(scenarioTitle = swc.scenario.title, lumaIntro = swc.scenario.lumaIntro, challenges = swc.challenges, onOpenChallenge = onOpenChallenge)
+                ScenarioBlock(
+                    scenarioTitle = swc.scenario.title,
+                    lumaIntro = swc.scenario.lumaIntro,
+                    challenges = swc.challenges,
+                    accent = accent,
+                    outcomes = uiState.challengeOutcomes,
+                    onOpenChallenge = onOpenChallenge
+                )
             }
 
             if (uiState.restorationMissions.isNotEmpty()) {
-                item { SectionHeader(title = "Reparar el entorno", subtitle = "Ayuda a restaurar esta zona paso a paso.") }
+                item { SectionHeader(title = "🛠️ Reparar el entorno", subtitle = "Ayuda a restaurar esta zona paso a paso.") }
                 items(uiState.restorationMissions) { mission ->
-                    RestorationCard(mission = mission, onClick = { onOpenRestoration(mission.id) })
+                    RestorationCard(mission = mission, accent = accent, onClick = { onOpenRestoration(mission.id) })
                 }
             }
 
             if (uiState.authorizationActivities.isNotEmpty()) {
-                item { SectionHeader(title = "Ruta de la autorización", subtitle = "Revisa actividades y decide con responsabilidad.") }
+                item { SectionHeader(title = "📝 Ruta de la autorización", subtitle = "Revisa actividades y decide con responsabilidad.") }
                 items(uiState.authorizationActivities) { activity ->
-                    AuthorizationCard(activity = activity, onClick = { onOpenAuthorization(activity.id) })
+                    AuthorizationCard(
+                        activity = activity,
+                        outcome = uiState.authorizationOutcomes[activity.id],
+                        onClick = { onOpenAuthorization(activity.id) }
+                    )
                 }
             }
 
@@ -111,16 +123,22 @@ private fun ScenarioBlock(
     scenarioTitle: String,
     lumaIntro: String,
     challenges: List<ChallengeInfo>,
+    accent: Color,
+    outcomes: Map<Long, Boolean>,
     onOpenChallenge: (Long) -> Unit
 ) {
-    Card(shape = RoundedCornerShape(20.dp), colors = CardDefaults.cardColors(containerColor = CardWhite)) {
+    Card(
+        shape = RoundedCornerShape(20.dp),
+        colors = CardDefaults.cardColors(containerColor = accent.copy(alpha = 0.08f)),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.18f))
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Text(scenarioTitle, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = InkDark)
             Spacer(Modifier.height(4.dp))
             Text(lumaIntro, style = MaterialTheme.typography.bodyMedium, color = InkDark.copy(alpha = 0.7f))
             Spacer(Modifier.height(10.dp))
             challenges.forEach { challenge ->
-                ChallengeRow(challenge = challenge, onClick = { onOpenChallenge(challenge.id) })
+                ChallengeRow(challenge = challenge, outcome = outcomes[challenge.id], onClick = { onOpenChallenge(challenge.id) })
                 if (challenge != challenges.last()) Spacer(Modifier.height(8.dp))
             }
         }
@@ -128,7 +146,7 @@ private fun ScenarioBlock(
 }
 
 @Composable
-private fun ChallengeRow(challenge: ChallengeInfo, onClick: () -> Unit) {
+private fun ChallengeRow(challenge: ChallengeInfo, outcome: Boolean?, onClick: () -> Unit) {
     val (icon, label) = when (challenge.type) {
         ChallengeType.DECISION -> Icons.Filled.Balance to "Decisión"
         ChallengeType.SEMAFORO -> Icons.Filled.Traffic to "Semáforo"
@@ -137,10 +155,16 @@ private fun ChallengeRow(challenge: ChallengeInfo, onClick: () -> Unit) {
         ChallengeType.DRAG_RESTORE -> Icons.Filled.Build to "Reparar"
         ChallengeType.AUTHORIZATION -> Icons.Filled.Gavel to "Autorización"
     }
+    val (bg, border, badgeEmoji) = when (outcome) {
+        true -> Triple(SuccessGreen.copy(alpha = 0.16f), SuccessGreen.copy(alpha = 0.5f), "✅")
+        false -> Triple(ErrorRed.copy(alpha = 0.14f), ErrorRed.copy(alpha = 0.5f), "🔁")
+        null -> Triple(CardWhite, Color(0xFFE0E0E0), null)
+    }
     Surface(
         onClick = onClick,
         shape = RoundedCornerShape(14.dp),
-        color = CreamBg,
+        color = bg,
+        border = androidx.compose.foundation.BorderStroke(1.dp, border),
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -150,21 +174,9 @@ private fun ChallengeRow(challenge: ChallengeInfo, onClick: () -> Unit) {
                 Text(challenge.title, style = MaterialTheme.typography.titleMedium, color = InkDark, fontWeight = FontWeight.SemiBold)
                 Text("$label · ${challenge.xpReward} XP", style = MaterialTheme.typography.labelLarge, color = InkDark.copy(alpha = 0.6f))
             }
-            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = InkDark.copy(alpha = 0.4f))
-        }
-    }
-}
-
-@Composable
-private fun RestorationCard(mission: RestorationMissionInfo, onClick: () -> Unit) {
-    Surface(onClick = onClick, shape = RoundedCornerShape(18.dp), color = ForestLight.copy(alpha = 0.15f), modifier = Modifier.fillMaxWidth()) {
-        Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            ItemIcon(key = mission.steps.firstOrNull()?.itemKey ?: "item_seed", modifier = Modifier.size(48.dp))
-            Spacer(Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(mission.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = InkDark)
-                Text(mission.description, style = MaterialTheme.typography.bodyMedium, color = InkDark.copy(alpha = 0.7f), maxLines = 2)
-                Text("${mission.steps.size} pasos · ${mission.xpReward} XP", style = MaterialTheme.typography.labelLarge, color = ForestMid)
+            if (badgeEmoji != null) {
+                Text(badgeEmoji, style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.width(6.dp))
             }
             Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = InkDark.copy(alpha = 0.4f))
         }
@@ -172,14 +184,51 @@ private fun RestorationCard(mission: RestorationMissionInfo, onClick: () -> Unit
 }
 
 @Composable
-private fun AuthorizationCard(activity: AuthorizationActivityInfo, onClick: () -> Unit) {
-    Surface(onClick = onClick, shape = RoundedCornerShape(18.dp), color = RiverLight.copy(alpha = 0.2f), modifier = Modifier.fillMaxWidth()) {
+private fun RestorationCard(mission: RestorationMissionInfo, accent: Color, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(18.dp),
+        color = accent.copy(alpha = 0.14f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.3f)),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            ItemIcon(key = mission.steps.firstOrNull()?.itemKey ?: "item_seed", modifier = Modifier.size(48.dp))
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(mission.title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = InkDark)
+                Text(mission.description, style = MaterialTheme.typography.bodyMedium, color = InkDark.copy(alpha = 0.7f), maxLines = 2)
+                Text("${mission.steps.size} pasos · ${mission.xpReward} XP", style = MaterialTheme.typography.labelLarge, color = accent)
+            }
+            Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = InkDark.copy(alpha = 0.4f))
+        }
+    }
+}
+
+@Composable
+private fun AuthorizationCard(activity: AuthorizationActivityInfo, outcome: Boolean?, onClick: () -> Unit) {
+    val (bg, border, badgeEmoji) = when (outcome) {
+        true -> Triple(SuccessGreen.copy(alpha = 0.16f), SuccessGreen.copy(alpha = 0.5f), "✅")
+        false -> Triple(ErrorRed.copy(alpha = 0.14f), ErrorRed.copy(alpha = 0.5f), "🔁")
+        null -> Triple(RiverLight.copy(alpha = 0.2f), RiverBlue.copy(alpha = 0.3f), null)
+    }
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(18.dp),
+        color = bg,
+        border = androidx.compose.foundation.BorderStroke(1.dp, border),
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             ItemIcon(key = activity.iconKey, modifier = Modifier.size(48.dp))
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(activity.activityName, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = InkDark)
                 Text(activity.description, style = MaterialTheme.typography.bodyMedium, color = InkDark.copy(alpha = 0.7f), maxLines = 2)
+            }
+            if (badgeEmoji != null) {
+                Text(badgeEmoji, style = MaterialTheme.typography.titleMedium)
+                Spacer(Modifier.width(6.dp))
             }
             Icon(Icons.Filled.ChevronRight, contentDescription = null, tint = InkDark.copy(alpha = 0.4f))
         }

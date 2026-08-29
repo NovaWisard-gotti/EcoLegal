@@ -32,6 +32,9 @@ interface ChallengeDao {
     @Query("SELECT * FROM challenge_attempt WHERE challengeId = :challengeId AND userId = :userId ORDER BY timestamp DESC")
     suspend fun getAttempts(challengeId: Long, userId: Long): List<ChallengeAttempt>
 
+    @Query("SELECT * FROM challenge_attempt WHERE userId = :userId ORDER BY timestamp DESC")
+    suspend fun getAllAttemptsForUser(userId: Long): List<ChallengeAttempt>
+
     @Query("SELECT * FROM challenge_attempt WHERE userId = :userId AND success = 0 ORDER BY timestamp DESC LIMIT :limit")
     suspend fun getRecentFailedAttempts(userId: Long, limit: Int): List<ChallengeAttempt>
 

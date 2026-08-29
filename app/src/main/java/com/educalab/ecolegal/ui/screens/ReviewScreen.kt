@@ -62,13 +62,15 @@ fun ReviewScreen(userId: Long, onBack: () -> Unit, onOpenChallenge: (Long) -> Un
                 Surface(
                     onClick = { onOpenChallenge(challenge.id) },
                     shape = RoundedCornerShape(14.dp),
-                    color = CardWhite,
+                    color = SunGold.copy(alpha = 0.14f),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, SunGold.copy(alpha = 0.4f)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Filled.Replay, contentDescription = null, tint = ForestMid)
+                        Icon(Icons.Filled.Replay, contentDescription = null, tint = SunGold)
                         Spacer(Modifier.width(10.dp))
                         Text(challenge.title, modifier = Modifier.weight(1f), color = InkDark, fontWeight = FontWeight.SemiBold)
+                        Text("🔁", style = MaterialTheme.typography.titleMedium)
                     }
                 }
             }

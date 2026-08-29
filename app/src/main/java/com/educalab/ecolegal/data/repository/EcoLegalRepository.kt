@@ -224,6 +224,22 @@ class EcoLegalRepository(private val db: AppDatabase) {
         return attempts.any { it.attemptNumber < currentAttemptNumber && (it.success || it.partial) }
     }
 
+    /**
+     * Resultado del intento más reciente de cada reto para este usuario (true = correcto,
+     * false = falló), para pintar de verde/rojo la lista de retos de la zona. El niño
+     * siempre puede volver a intentarlo: cada nuevo intento reemplaza el color mostrado.
+     */
+    suspend fun getLatestChallengeOutcomes(userId: Long): Map<Long, Boolean> =
+        db.challengeDao().getAllAttemptsForUser(userId)
+            .distinctBy { it.challengeId }
+            .associate { it.challengeId to it.success }
+
+    /** Resultado de la decisión de autorización más reciente por actividad (mismo criterio). */
+    suspend fun getLatestAuthorizationOutcomes(userId: Long): Map<Long, Boolean> =
+        db.authorizationDao().getDecisionsForUser(userId)
+            .distinctBy { it.authorizationActivityId }
+            .associate { it.authorizationActivityId to it.isCorrect }
+
     /** Retos fallidos recientes, para armar la actividad de repaso (sección 20). */
     suspend fun getReviewChallenges(userId: Long, limit: Int = 5): List<ChallengeInfo> {
         val failed = db.challengeDao().getRecentFailedAttempts(userId, limit)

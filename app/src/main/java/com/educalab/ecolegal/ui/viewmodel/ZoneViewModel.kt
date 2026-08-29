@@ -18,7 +18,9 @@ data class ZoneUiState(
     val scenarios: List<ScenarioWithChallenges> = emptyList(),
     val restorationMissions: List<RestorationMissionInfo> = emptyList(),
     val authorizationActivities: List<AuthorizationActivityInfo> = emptyList(),
-    val completedChallengeIds: Set<Long> = emptySet()
+    val completedChallengeIds: Set<Long> = emptySet(),
+    val challengeOutcomes: Map<Long, Boolean> = emptyMap(),
+    val authorizationOutcomes: Map<Long, Boolean> = emptyMap()
 )
 
 /** Alimenta la pantalla "hub" de una zona: sus escenas, retos, reparación y autorización. */
@@ -43,6 +45,8 @@ class ZoneViewModel(
             }
             val restoration = repository.getRestorationMissionsForZone(zoneId)
             val authorization = repository.getAuthorizationActivitiesForZone(zoneId)
+            val challengeOutcomes = repository.getLatestChallengeOutcomes(userId)
+            val authorizationOutcomes = repository.getLatestAuthorizationOutcomes(userId)
 
             _uiState.value = ZoneUiState(
                 loading = false,
@@ -50,7 +54,9 @@ class ZoneViewModel(
                 progress = overview?.progress,
                 scenarios = scenarios,
                 restorationMissions = restoration,
-                authorizationActivities = authorization
+                authorizationActivities = authorization,
+                challengeOutcomes = challengeOutcomes,
+                authorizationOutcomes = authorizationOutcomes
             )
         }
     }

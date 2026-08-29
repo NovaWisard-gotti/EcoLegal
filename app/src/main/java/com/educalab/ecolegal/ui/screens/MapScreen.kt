@@ -118,10 +118,12 @@ private fun ZoneMapCard(
     onClick: () -> Unit
 ) {
     val locked = status == ZoneStatus.LOCKED
+    val accent = zoneAccent(zone.code)
     Card(
         onClick = onClick,
         shape = RoundedCornerShape(22.dp),
-        colors = CardDefaults.cardColors(containerColor = if (locked) CardWhite.copy(alpha = 0.6f) else CardWhite),
+        colors = CardDefaults.cardColors(containerColor = if (locked) CardWhite.copy(alpha = 0.6f) else accent.copy(alpha = 0.12f)),
+        border = if (locked) null else androidx.compose.foundation.BorderStroke(1.dp, accent.copy(alpha = 0.25f)),
         elevation = CardDefaults.cardElevation(defaultElevation = if (locked) 0.dp else 3.dp)
     ) {
         Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -129,7 +131,7 @@ private fun ZoneMapCard(
                 modifier = Modifier
                     .size(64.dp)
                     .clip(RoundedCornerShape(18.dp))
-                    .background(if (locked) Color(0xFFEDEDED) else ForestLight.copy(alpha = 0.2f)),
+                    .background(if (locked) Color(0xFFEDEDED) else accent.copy(alpha = 0.25f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (locked) {

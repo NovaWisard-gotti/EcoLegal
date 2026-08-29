@@ -32,7 +32,7 @@ interface AuthorizationDao {
     @Query("SELECT * FROM protection_measure WHERE authorizationActivityId = :activityId")
     suspend fun getMeasures(activityId: Long): List<ProtectionMeasure>
 
-    @Query("SELECT * FROM authorization_decision WHERE userId = :userId")
+    @Query("SELECT * FROM authorization_decision WHERE userId = :userId ORDER BY timestamp DESC")
     suspend fun getDecisionsForUser(userId: Long): List<AuthorizationDecision>
 
     @Query("SELECT COUNT(*) FROM authorization_activity")
